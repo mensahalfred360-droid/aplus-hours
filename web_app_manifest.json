@@ -1,17 +1,23 @@
 {
-"name": "A+ Hours",
-"short_name": "A+ Hours",
-"description": "Your ultimate study companion, focus timer, and AI guide.",
-"start_url": "/",
-"display": "standalone",
-"background_color": "#020617",
-"theme_color": "#ec4899",
-"icons": [
-{
-"src": "logo.svg",
-"sizes": "any",
-"type": "image/svg+xml",
-"purpose": "any maskable"
-}
-]
+  "name": "A+ Hours",
+  "short_name": "A+ Hours",
+  "description": "Your ultimate study companion, focus timer, and AI guide.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#ec4899",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
 }
