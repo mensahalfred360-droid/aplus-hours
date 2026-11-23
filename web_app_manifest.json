@@ -1,17 +1,33 @@
 {
+  "id": "./",
   "name": "A+ Hours",
   "short_name": "A+ Hours",
   "description": "Your ultimate study companion, focus timer, and AI guide.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#020617",
   "theme_color": "#ec4899",
+  "categories": ["education", "productivity"],
   "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "logo.svg",
