@@ -1622,6 +1622,39 @@
             })();
         }
     </script>
+    <!-- Custom User Name Greeting & Editor -->
+<div id="user-name-bar" style="position:fixed; top:12px; right:16px; z-index:9999; background:rgba(15,23,42,0.85); color:#f8fafc; padding:6px 12px; border-radius:999px; font-family:sans-serif; font-size:13px; border:1px solid rgba(148,163,184,0.25); cursor:pointer; backdrop-filter:blur(6px);" title="Click to change your name">
+  <span id="user-greeting">Welcome, Student</span> ✏️
+</div>
+
+<script>
+  (function () {
+    const greetingEl = document.getElementById('user-greeting');
+    const barEl = document.getElementById('user-name-bar');
+    const STORAGE_KEY = 'aplus_custom_username';
+
+    function updateGreeting() {
+      const savedName = localStorage.getItem(STORAGE_KEY);
+      greetingEl.textContent = savedName ? `Hi, ${savedName}` : 'Set Your Name';
+    }
+
+    barEl.addEventListener('click', function () {
+      const current = localStorage.getItem(STORAGE_KEY) || '';
+      const nextName = prompt('Enter your name (leave blank to reset):', current);
+      if (nextName !== null) {
+        const trimmed = nextName.trim();
+        if (trimmed) {
+          localStorage.setItem(STORAGE_KEY, trimmed);
+        } else {
+          localStorage.removeItem(STORAGE_KEY);
+        }
+        updateGreeting();
+      }
+    });
+
+    updateGreeting();
+  })();
+</script>
     <script>
       document.addEventListener('contextmenu', function (e) {
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
