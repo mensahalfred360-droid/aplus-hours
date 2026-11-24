@@ -1622,5 +1622,12 @@
             })();
         }
     </script>
+    <script>
+      document.addEventListener('contextmenu', function (e) {
+        if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+          e.preventDefault();
+        }
+      });
+    </script>
 </body>
 </html>
