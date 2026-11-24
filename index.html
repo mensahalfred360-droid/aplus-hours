@@ -1693,5 +1693,56 @@
         }
       });
     </script>
+    <!-- Frosted Always-on-Top Mini Timer Pop-Out -->
+<button id="pip-timer-btn" style="position:fixed; bottom:16px; right:16px; z-index:9999; background:rgba(37,99,235,0.9); color:#fff; border:1px solid rgba(255,255,255,0.2); border-radius:999px; padding:10px 16px; font-family:sans-serif; font-size:13px; font-weight:600; cursor:pointer; backdrop-filter:blur(8px); box-shadow:0 4px 14px rgba(0,0,0,0.3);">
+  ⧉ Float Mini Timer
+</button>
+
+<script>
+  (function () {
+    const btn = document.getElementById('pip-timer-btn');
+    if (!('documentPictureInPicture' in window)) {
+      btn.style.display = 'none';
+      return;
+    }
+
+    btn.addEventListener('click', async () => {
+      try {
+        const pipWindow = await documentPictureInPicture.requestWindow({
+          width: 240,
+          height: 115
+        });
+
+        const doc = pipWindow.document;
+        doc.body.style.cssText =
+          'margin:0; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; background:linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.88)); color:#f8fafc; font-family:sans-serif; user-select:none; transition:opacity 0.25s ease; opacity:0.65;';
+
+        // Brighten when hovered, dim when studying in another app
+        doc.body.addEventListener('mouseenter', () => { doc.body.style.opacity = '1'; });
+        doc.body.addEventListener('mouseleave', () => { doc.body.style.opacity = '0.65'; });
+
+        const title = doc.createElement('div');
+        title.textContent = 'A+ HOURS • FOCUS';
+        title.style.cssText = 'font-size:10px; letter-spacing:1.5px; color:#94a3b8; margin-bottom:4px;';
+
+        const clock = doc.createElement('div');
+        clock.style.cssText = 'font-size:34px; font-weight:700; letter-spacing:1px; text-shadow:0 2px 10px rgba(56,189,248,0.35);';
+
+        doc.body.append(title, clock);
+
+        const syncTimer = setInterval(() => {
+          if (pipWindow.closed) {
+            clearInterval(syncTimer);
+            return;
+          }
+          const match = document.body.innerText.match(/\b\d{1,2}:\d{2}(?::\d{2})?\b/);
+          clock.textContent = match ? match[0] : '00:00';
+        }, 500);
+      } catch (err) {
+        console.error('PiP failed:', err);
+      }
+    });
+  })();
+</script>
 </body>
 </html>
