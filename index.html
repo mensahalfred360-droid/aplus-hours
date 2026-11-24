@@ -1622,23 +1622,48 @@
             })();
         }
     </script>
-    <!-- Custom User Name Greeting & Editor -->
-<div id="user-name-bar" style="position:fixed; top:12px; right:16px; z-index:9999; background:rgba(15,23,42,0.85); color:#f8fafc; padding:6px 12px; border-radius:999px; font-family:sans-serif; font-size:13px; border:1px solid rgba(148,163,184,0.25); cursor:pointer; backdrop-filter:blur(6px);" title="Click to change your name">
-  <span id="user-greeting">Welcome, Student</span> ✏️
-</div>
-
+ <!-- Inline Pencil Editor Next to Existing Greeting -->
 <script>
   (function () {
-    const greetingEl = document.getElementById('user-greeting');
-    const barEl = document.getElementById('user-name-bar');
     const STORAGE_KEY = 'aplus_custom_username';
+    const DEFAULT_GREETING = 'Welcome, Student';
 
-    function updateGreeting() {
-      const savedName = localStorage.getItem(STORAGE_KEY);
-      greetingEl.textContent = savedName ? `Hi, ${savedName}` : 'Set Your Name';
+    // Locate the greeting element on the page
+    function findGreetingElement() {
+      const candidates = document.querySelectorAll('h1, h2, h3, p, span, div');
+      for (const el of candidates) {
+        if (el.children.length === 0) {
+          const txt = el.textContent.trim();
+          if (/^(Welcome|Hi|Hello|Good morning|Good afternoon|Good evening)/i.test(txt)) {
+            return el;
+          }
+        }
+      }
+      return null;
     }
 
-    barEl.addEventListener('click', function () {
+    const targetEl = findGreetingElement();
+    if (!targetEl) return;
+
+    // Store original greeting text so resetting restores it cleanly
+    const originalText = targetEl.textContent.trim() || DEFAULT_GREETING;
+
+    // Create the text span and the pencil button on its right
+    const textSpan = document.createElement('span');
+    const pencilBtn = document.createElement('button');
+    pencilBtn.type = 'button';
+    pencilBtn.textContent = '✏️';
+    pencilBtn.title = 'Set your name';
+    pencilBtn.setAttribute('aria-label', 'Set your name');
+    pencilBtn.style.cssText = 'background:none; border:none; cursor:pointer; font-size:0.85em; margin-left:8px; padding:2px 4px; opacity:0.8; vertical-align:middle;';
+
+    function renderGreeting() {
+      const savedName = localStorage.getItem(STORAGE_KEY);
+      textSpan.textContent = savedName ? `Hi, ${savedName}` : originalText;
+    }
+
+    pencilBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
       const current = localStorage.getItem(STORAGE_KEY) || '';
       const nextName = prompt('Enter your name (leave blank to reset):', current);
       if (nextName !== null) {
@@ -1648,13 +1673,16 @@
         } else {
           localStorage.removeItem(STORAGE_KEY);
         }
-        updateGreeting();
+        renderGreeting();
       }
     });
 
-    updateGreeting();
+    targetEl.textContent = '';
+    targetEl.appendChild(textSpan);
+    targetEl.appendChild(pencilBtn);
+    renderGreeting();
   })();
-</script>
+</script> 
     <script>
       document.addEventListener('contextmenu', function (e) {
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
