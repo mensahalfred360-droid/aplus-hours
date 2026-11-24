@@ -1622,67 +1622,70 @@
             })();
         }
     </script>
- <!-- Inline Pencil Editor Next to Existing Greeting -->
+    <!-- Inline Pencil Editor Next to Existing Greeting -->
 <script>
   (function () {
     const STORAGE_KEY = 'aplus_custom_username';
-    const DEFAULT_GREETING = 'Welcome, Student';
 
-    // Locate the greeting element on the page
-    function findGreetingElement() {
-      const candidates = document.querySelectorAll('h1, h2, h3, p, span, div');
+    function attachPencil() {
+      if (document.getElementById('aplus-inline-pencil')) return true;
+
+      // Look for any visible text element containing a greeting word
+      const candidates = document.querySelectorAll('h1, h2, h3, h4, p, span, div');
       for (const el of candidates) {
         if (el.children.length === 0) {
           const txt = el.textContent.trim();
-          if (/^(Welcome|Hi|Hello|Good morning|Good afternoon|Good evening)/i.test(txt)) {
-            return el;
+          if (/\b(Welcome|Hi|Hello|Good morning|Good afternoon|Good evening|Hey|Student)\b/i.test(txt) && txt.length < 60) {
+            const originalText = txt;
+            const textSpan = document.createElement('span');
+            const pencilBtn = document.createElement('button');
+
+            pencilBtn.id = 'aplus-inline-pencil';
+            pencilBtn.type = 'button';
+            pencilBtn.textContent = '✏️';
+            pencilBtn.title = 'Set your name';
+            pencilBtn.setAttribute('aria-label', 'Set your name');
+            pencilBtn.style.cssText = 'background:none; border:none; cursor:pointer; font-size:0.85em; margin-left:8px; padding:2px 4px; opacity:0.85; vertical-align:middle;';
+
+            function renderGreeting() {
+              const savedName = localStorage.getItem(STORAGE_KEY);
+              textSpan.textContent = savedName ? `Hi, ${savedName}` : originalText;
+            }
+
+            pencilBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              const current = localStorage.getItem(STORAGE_KEY) || '';
+              const nextName = prompt('Enter your name (leave blank to reset):', current);
+              if (nextName !== null) {
+                const trimmed = nextName.trim();
+                if (trimmed) {
+                  localStorage.setItem(STORAGE_KEY, trimmed);
+                } else {
+                  localStorage.removeItem(STORAGE_KEY);
+                }
+                renderGreeting();
+              }
+            });
+
+            el.textContent = '';
+            el.appendChild(textSpan);
+            el.appendChild(pencilBtn);
+            renderGreeting();
+            return true;
           }
         }
       }
-      return null;
+      return false;
     }
 
-    const targetEl = findGreetingElement();
-    if (!targetEl) return;
-
-    // Store original greeting text so resetting restores it cleanly
-    const originalText = targetEl.textContent.trim() || DEFAULT_GREETING;
-
-    // Create the text span and the pencil button on its right
-    const textSpan = document.createElement('span');
-    const pencilBtn = document.createElement('button');
-    pencilBtn.type = 'button';
-    pencilBtn.textContent = '✏️';
-    pencilBtn.title = 'Set your name';
-    pencilBtn.setAttribute('aria-label', 'Set your name');
-    pencilBtn.style.cssText = 'background:none; border:none; cursor:pointer; font-size:0.85em; margin-left:8px; padding:2px 4px; opacity:0.8; vertical-align:middle;';
-
-    function renderGreeting() {
-      const savedName = localStorage.getItem(STORAGE_KEY);
-      textSpan.textContent = savedName ? `Hi, ${savedName}` : originalText;
+    if (!attachPencil()) {
+      const observer = new MutationObserver(function () {
+        if (attachPencil()) observer.disconnect();
+      });
+      observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     }
-
-    pencilBtn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      const current = localStorage.getItem(STORAGE_KEY) || '';
-      const nextName = prompt('Enter your name (leave blank to reset):', current);
-      if (nextName !== null) {
-        const trimmed = nextName.trim();
-        if (trimmed) {
-          localStorage.setItem(STORAGE_KEY, trimmed);
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-        }
-        renderGreeting();
-      }
-    });
-
-    targetEl.textContent = '';
-    targetEl.appendChild(textSpan);
-    targetEl.appendChild(pencilBtn);
-    renderGreeting();
   })();
-</script> 
+</script>
     <script>
       document.addEventListener('contextmenu', function (e) {
         if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
