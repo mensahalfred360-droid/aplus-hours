@@ -1622,6 +1622,14 @@
             })();
         }
     </script>
+    <!-- Offline Support -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js');
+    });
+  }
+</script>
     <!-- Inline Pencil Editor Next to Existing Greeting -->
 <script>
   (function () {
